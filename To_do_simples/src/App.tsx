@@ -31,6 +31,14 @@ function App() {
       }
    }, []);
 
+   //useEffect para ordenar as tarefas por data regredindo
+   useEffect(() => {
+      const tarefasOrdenadas = tarefas.sort((a, b) => {
+         return b.id - a.id;
+      });
+      setExibirTarefas(tarefasOrdenadas);
+   }, [tarefas]);
+
    //useEffect para salvar as o thema no localStorage
    useEffect(() => {
       localStorage.setItem('theme', theme.toString());
@@ -104,8 +112,9 @@ function App() {
    //HTML
    return (
       <>
-         {/* <style type='text/css'>
-            {`
+         {
+            <style type='text/css'>
+               {`
             .bg-darkmode {
                   background-color: #17181F;
                   color: #fff;
@@ -119,8 +128,8 @@ function App() {
                   color: ${theme ? '#fff' : '#ffffff'};
             }
             `}
-         </style>
- */}
+            </style>
+         }
          <Container
             fluid
             //className={theme ? ' bg-darkmode te' : 'bg-lightmode'}
@@ -129,31 +138,37 @@ function App() {
                minHeight: '100vh',
             }}
          >
-            <Form.Check
-               type='switch'
-               label='Mudar o tema'
-               checked={theme}
-               onChange={() => setTheme(!theme)}
-            />
-
-            {/* Criar um dataPicker para selecionar o dia, atráves do metodo date */}
-            <Form.Group controlId='formGridState'>
-               <Form.Label>Selecione o dia</Form.Label>
-               <Form.Control as='select' onChange={(e) => selecionarDia(e.target.value)}>
-                  <option value=''>Todos</option>
-                  <option value='0'>Domingo</option>
-                  <option value='1'>Segunda</option>
-                  <option value='2'>Terça</option>
-                  <option value='3'>Quarta</option>
-                  <option value='4'>Quinta</option>
-                  <option value='5'>Sexta</option>
-                  <option value='6'>Sábado</option>
-               </Form.Control>
-            </Form.Group>
-
             <Container>
                <Row>
-                  <Col className='text-center'>
+                  <Col xs='12' md='2'>
+                     <Form.Check
+                        type='switch'
+                        label='Mudar o tema'
+                        checked={theme}
+                        onChange={() => setTheme(!theme)}
+                     />
+                  </Col>
+                  {/* Criar um dataPicker para selecionar o dia, atráves do metodo date */}
+                  <Col xs='12' md='10'>
+                     <Form.Group controlId='formGridState'>
+                        <Form.Label>Selecione o dia</Form.Label>
+                        <Form.Control as='select' onChange={(e) => selecionarDia(e.target.value)}>
+                           <option value=''>Todos</option>
+                           <option value='0'>Domingo</option>
+                           <option value='1'>Segunda</option>
+                           <option value='2'>Terça</option>
+                           <option value='3'>Quarta</option>
+                           <option value='4'>Quinta</option>
+                           <option value='5'>Sexta</option>
+                           <option value='6'>Sábado</option>
+                        </Form.Control>
+                     </Form.Group>
+                  </Col>
+               </Row>
+            </Container>
+            <Container>
+               <Row>
+                  <Col className='text-center mt-3'>
                      <h1>Lista de Tarefas</h1>
                      <hr />
                   </Col>
