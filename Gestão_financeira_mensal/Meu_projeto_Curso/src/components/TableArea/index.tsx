@@ -17,6 +17,12 @@ export function TableArea({ filteredList, list, setList }: Props) {
       setList(newList);
    };
 
+   const mostrarSalario = () => {
+      const salario = 2500;
+      salario.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+      console.log(salario);
+   };
+
    return (
       <Table responsive hover className='table-light'>
          <thead>
