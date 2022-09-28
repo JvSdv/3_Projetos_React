@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 /* import styles from './App.module.css'; */
 //import checkIcon from './assets/leftarrow.png';
 
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button, ProgressBar } from 'react-bootstrap';
 
 function App() {
    //Vamos criar um To-Do List
@@ -17,6 +17,7 @@ function App() {
    const [tarefas, setTarefas] = useState<Tarefa[]>([]);
    const [exibirTarefas, setExibirTarefas] = useState<Tarefa[]>([]);
    const [theme, setTheme] = useState<boolean>(false);
+   const [concluido, setConcluido] = useState<number>(0);
 
    //////////////// useEffect para carregar as tarefas do localStorage
    useEffect(() => {
@@ -47,6 +48,26 @@ function App() {
    useEffect(() => {
       localStorage.setItem('tarefas', JSON.stringify(tarefas));
       setExibirTarefas(tarefas);
+   }, [tarefas]);
+
+   //useEffect para ver qual a porcentagem de tarefas que foi concluida no dia
+   useEffect(() => {
+      const tarefasDoDia: Tarefa[] = tarefas.filter((tarefa) => {
+         const dataAtual = new Date();
+         const dataTarefa = new Date(tarefa.id);
+         if (
+            dataTarefa.getDate() === dataAtual.getDate() &&
+            dataTarefa.getMonth() === dataAtual.getMonth() &&
+            dataTarefa.getFullYear() === dataAtual.getFullYear()
+         ) {
+            return true;
+         } else {
+            return false;
+         }
+      });
+      const tarefasConcluidas = tarefasDoDia.filter((tarefa) => tarefa.concluida).length;
+      const porcentagem = (tarefasConcluidas / tarefasDoDia.length) * 100;
+      setConcluido(porcentagem);
    }, [tarefas]);
 
    ///////////////Funções
@@ -149,7 +170,7 @@ function App() {
                      />
                   </Col>
                   {/* Criar um dataPicker para selecionar o dia, atráves do metodo date */}
-                  <Col xs='12' md='10'>
+                  <Col xs='12' md='4'>
                      <Form.Group controlId='formGridState'>
                         <Form.Label>Selecione o dia</Form.Label>
                         <Form.Control as='select' onChange={(e) => selecionarDia(e.target.value)}>
@@ -163,6 +184,14 @@ function App() {
                            <option value='6'>Sábado</option>
                         </Form.Control>
                      </Form.Group>
+                  </Col>
+                  <Col xs='12' md='6' className='align-self-center'>
+                     <ProgressBar
+                        animated
+                        variant='success'
+                        now={concluido}
+                        label={`${concluido.toFixed(0)}%`}
+                     />
                   </Col>
                </Row>
             </Container>
